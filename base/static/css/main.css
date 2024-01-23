@@ -1,0 +1,25 @@
+#logo {
+	width: 50px; 
+	height: 10px;/* Set the width of the logo */
+	height: auto; /* Maintain aspect ratio */
+	margin-right: 1px; /* Add margin to the right of the logo */
+	
+  }
+body{
+	background-color: #ebeff5;
+}
+
+
+#total-orders{
+	background-color: #4cb4c7;
+}
+
+
+#orders-delivered{
+	background-color: #7abecc;
+}
+
+#orders-pending{
+	background-color: #7CD1C0;
+}
+
