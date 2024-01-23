@@ -91,12 +91,25 @@
         box-shadow: none !important;
         outline: 0px !important;
       }
+
+
+      #messages {
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px; /* Add border-radius for a rounded look */
+    }
     </style>
   </head>
   <body>
-    {% for message in messages %}
-    <p id="messages">{{message}}</p>
-    {% endfor %}
+    <div class="message-container">
+    
+      {% for message in messages %}
+          <p id="messages">{{ message }}</p>
+      {% endfor %}
+  
+</div>
 
 
 

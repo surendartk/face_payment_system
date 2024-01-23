@@ -86,7 +86,7 @@ def homebase(request):
                data=BankAccount.objects.get(username=current_user)
             
                return render(request,'main.html',{'data':data})
-        messages.error(request,"username doesn't match or accountno already exist")
+        messages.info(request,"username doesn't match or accountno already exist")
             
 
     form = BankAccountForm()
@@ -146,7 +146,7 @@ def register(request):
                 user=form.cleaned_data.get('username')
                 messages.success(request,'Account was created '+ user)
                 return redirect('login')
-                
+            messages.info(request,"username already exists or password mismatch")
         context={'form':form}
     
     return render(request,'register.html',context)
@@ -197,6 +197,10 @@ def admin_dashboard(request):
                 messages.info(request,'invalid amount')
             if deposit_amount<=0:
                 messages.info(request,'invalid amount')
+                return redirect('admin_dashboard') 
+            elif deposit_amount > Decimal('1e7'):
+                # Handle the case where the amount is too large (e.g., more than 100 digits)
+                messages.info(request, 'Amount is too large. Please enter a smaller value.  < crore')
                 return redirect('admin_dashboard')    
             user.deposit(deposit_amount)
             user.save()
@@ -215,6 +219,13 @@ def admin_dashboard(request):
                 messages.info(request,'invalid amount')
             if withdrawal_amount<=0:
                 messages.info(request,'invalid amount')
+                return redirect('admin_dashboard')
+            elif withdrawal_amount > Decimal('1e7'):
+                # Handle the case where the amount is too large (e.g., more than 100 digits)
+                messages.info(request, 'Amount is too large. Please enter a smaller value.  < crore')
+                return redirect('admin_dashboard') 
+            elif withdrawal_amount >user.balance:
+                messages.info(request, 'not enough money')
                 return redirect('admin_dashboard')
             user.withdraw(withdrawal_amount)
             user.save()
