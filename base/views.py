@@ -82,7 +82,7 @@ def homebase(request):
                data=BankAccount.objects.get(username=current_user)
             
                return render(request,'main.html',{'data':data})
-        messages.info(request,'check account no and username ')
+        messages.info(request,"username doesn't match or accountno already exist")
             
 
     form = BankAccountForm()

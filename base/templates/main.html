@@ -126,11 +126,8 @@
                     <p><strong>Account Number:</strong> {{ data.account_number }}</p><br></br>
                     <p><strong>Balance:</strong> ${{ data.balance }}</p>
                 
-                    <h4>Transactions:</h4>
-                    <ul>
-                      
-                     
-                    </ul>
+               
+                   
                 </div>
                  <form method="post" action="{% url 'main' %}">
                   {% csrf_token %}
@@ -148,7 +145,7 @@
                   <button type="submit" class="btn btn-primary">Send Money</button>
               </form>
               
-<br>
+<br>     <h4>Transactions:</h4>
               <ul>
                 {% for transaction in data.display_transactions %}
                     <li>type : {{ transaction.type }} - Amount: ${{ transaction.amount }} - Date: {{ transaction.date }}</li>
