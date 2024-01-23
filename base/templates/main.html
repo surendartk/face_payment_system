@@ -105,24 +105,55 @@
       <body>
 
 
-       
+        {% for message in messages %}
+        <p id="messages">{{message}}</p>
+        {% endfor %}
+    
         <div class="container-fluid h-100">
           <div class="row h-100">
             <div class="col-12 d-flex justify-content-center align-items-center">
               <div class="user_card">
                 <div class="d-flex justify-content-center">
-                  <h3 id="form-title">Welcome home </h3>
+                  <h3 id="form-title">Welcome ,<h3>  Mr .{{ data.username }}</h3></h3>
 
                   
                 </div>
                 <div class="d-flex justify-content-center form_container">
-                 main page
+                  <div class="d-flex justify-content-center form_container">
+                   
                 
-                 <p>Username: {{ data.username }}</p>
-                 <p>Username: {{ data.balance }}</p>
-                 {% comment %} <p>Account Number: {{ bank_account.account_number }}</p>
-                 <p>Balance: ${{ bank_account.balance }}</p> {% endcomment %}
+                    <p><strong>Username:</strong> {{ data.username }}</p> <br></br>
+                    <p><strong>Account Number:</strong> {{ data.account_number }}</p><br></br>
+                    <p><strong>Balance:</strong> ${{ data.balance }}</p>
+                
+                    <h4>Transactions:</h4>
+                    <ul>
+                      
+                     
+                    </ul>
+                </div>
+                 <form method="post" action="{% url 'main' %}">
+                  {% csrf_token %}
+          
+                  <div class="form-group">
+                      <label for="recipientAccountNumber">Recipient's Account Number:</label>
+                      <input type="text" class="form-control" id="recipientAccountNumber" name="recipient_account_number" required>
+                  </div>
+          
+                  <div class="form-group">
+                      <label for="amount">Amount:</label>
+                      <input type="number" class="form-control" id="amount" name="amount" required>
+                  </div>
+          
+                  <button type="submit" class="btn btn-primary">Send Money</button>
+              </form>
               
+<br>
+              <ul>
+                {% for transaction in data.display_transactions %}
+                    <li>type : {{ transaction.type }} - Amount: ${{ transaction.amount }} - Date: {{ transaction.date }}</li>
+                {% endfor %}
+            </ul>
                 </div>
               </div>
             </div>

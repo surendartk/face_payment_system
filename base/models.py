@@ -1,28 +1,43 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
+from datetime import datetime
+import json
+from decimal import Decimal
 
 class BankAccount(models.Model):
     username = models.CharField(max_length=255)
     account_number = models.CharField(max_length=20, unique=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    transactions = models.TextField(default="[]")  # Store transactions as JSON string
+    transactions = models.TextField(default='[]')  # Store transactions as a JSON-encoded string
 
+    def add_transaction(self, transaction_type, amount, other_account_number=None):
+        transaction = {
+            'type': transaction_type,
+            'amount': str(amount),  # Convert Decimal to string
+            'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'sender_account_number': self.account_number,
+            'recipient_account_number': other_account_number,
+        }
+        current_transactions = json.loads(self.transactions)
+        current_transactions.append(transaction)
+        self.transactions = json.dumps(current_transactions)
+        self.save()
+       
     def deposit(self, amount):
         if amount > 0:
+            amount = Decimal(str(amount))
             self.balance += amount
-            self.transactions.append(f"Deposit: +${amount}")
-            self.save()
+            self.add_transaction('Deposit', amount)
             return f"Deposit of ${amount} successful. New balance: ${self.balance}"
         else:
             return "Invalid deposit amount. Please enter a positive value."
 
     def withdraw(self, amount):
         if amount > 0 and amount <= self.balance:
+            # Ensure amount is a Decimal
+            if not isinstance(amount, Decimal):
+                amount = Decimal(str(amount))
             self.balance -= amount
-            self.transactions.append(f"Withdrawal: -${amount}")
-            self.save()
+            self.add_transaction('Withdrawal', amount)
             return f"Withdrawal of ${amount} successful. New balance: ${self.balance}"
         elif amount <= 0:
             return "Invalid withdrawal amount. Please enter a positive value."
@@ -33,4 +48,17 @@ class BankAccount(models.Model):
         return f"Current balance for {self.username}'s account ({self.account_number}): ${self.balance}"
 
     def display_transactions(self):
-        return f"Transaction history for {self.username}'s account ({self.account_number}):\n{', '.join(self.transactions)}"
+    # Convert Decimal objects to string
+        transactions = json.loads(self.transactions)
+        formatted_transactions = [
+            {
+                'type': entry['type'],
+                'amount': str(entry['amount']),
+                'date': entry['date'],
+                'sender_account_number': entry['sender_account_number'],
+                'recipient_account_number': entry['recipient_account_number'],
+            }
+            for entry in transactions
+        ]
+    
+        return formatted_transactions
