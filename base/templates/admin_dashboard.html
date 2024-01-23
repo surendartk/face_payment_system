@@ -103,54 +103,66 @@
         </style>
       </head>
       <body>
-
-
         {% for message in messages %}
         <p id="messages">{{message}}</p>
         {% endfor %}
     
+
+       
         <div class="container-fluid h-100">
           <div class="row h-100">
             <div class="col-12 d-flex justify-content-center align-items-center">
+                
+<h1>Admin Dashboard</h1>
+
               <div class="user_card">
                 <div class="d-flex justify-content-center">
-                  <h3 id="form-title">Welcome ,<h3>  Mr .{{ data.username }}</h3></h3>
+                 
+                </div>
 
-                  
-                </div>
                 <div class="d-flex justify-content-center form_container">
-                  <div class="d-flex justify-content-center form_container">
-                   
-                
-                    <p><strong>Username:</strong> {{ data.username }}</p> <br></br>
-                    <p><strong>Account Number:</strong> {{ data.account_number }}</p><br></br>
-                    <p><strong>Balance:</strong> ${{ data.balance }}</p>
-                
-               
-                   
-                </div>
-                 <form method="post" action="{% url 'main' %}">
-                  {% csrf_token %}
-          
-                  <div class="form-group">
-                      <label for="recipientAccountNumber">Recipient's Account Number:</label>
-                      <input type="text" class="form-control" id="recipientAccountNumber" name="recipient_account_number" required>
-                  </div>
-          
-                  <div class="form-group">
-                      <label for="amount">Amount:</label>
-                      <input type="number" class="form-control" id="amount" name="amount" required>
-                  </div>
-          
-                  <button type="submit" class="btn btn-primary">Send Money</button>
-              </form>
-              
-<br>     <h4>Transactions:</h4>
-              <ul>
-                {% for transaction in data.display_transactions %}
-                    <li>type : {{ transaction.type }} - Amount: ${{ transaction.amount }} - Date: {{ transaction.date }}</li>
-                {% endfor %}
-            </ul>
+                  <!-- admin_dashboard.html -->
+
+<form method="post" action="{% url 'admin_dashboard' %}">
+    {% csrf_token %}
+    <label for="user_select">Select User:</label>
+    <select name="user_select" id="user_select">
+        {% for user in all_users %}
+            <option value="{{ user.username }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+
+    <div>
+        <label for="deposit_amount">Deposit Amount:</label>
+        <input type="number" name="deposit_amount" id="deposit_amount">
+        <button type="submit" name="action" value="deposit">Deposit</button>
+    </div>
+
+    <div>
+        <label for="withdrawal_amount">Withdrawal Amount:</label>
+        <input type="number" name="withdrawal_amount" id="withdrawal_amount">
+        <button type="submit" name="action" value="withdraw">Withdraw</button>
+    </div>
+
+    <div>
+        <button type="submit" name="action" value="view_details">View Details</button>
+        <button type="submit" name="action" value="delete">Delete Account</button>
+    </div>
+</form>
+
+{% if user_details %}
+    <h2>User Details</h2>
+    <p><strong>Username:</strong> {{ user_details.username }}</p>
+    <p><strong>Account Number:</strong> {{ user_details.account_number }}</p>
+    <p><strong>Balance:</strong> ${{ user_details.balance }}</p>
+
+    <h3>Transaction History</h3>
+    <ul>
+        {% for transaction in user_details.display_transactions %}
+            <li>{{ transaction.type }} - Amount: ${{ transaction.amount }} - Date: {{ transaction.date }}</li>
+        {% endfor %}
+    </ul>
+{% endif %} 
                 </div>
               </div>
             </div>
