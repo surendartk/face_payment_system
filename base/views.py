@@ -15,6 +15,7 @@ from django.http import HttpResponseBadRequest
 from decimal import Decimal
 
 def main(request):
+    
     if request.method == 'POST':
         # Retrieve form data
         recipient_account_number = request.POST.get('recipient_account_number')
@@ -36,6 +37,9 @@ def main(request):
             messages.info(request,"Invalid amount")
             return redirect('main')
         # Check if the user has enough funds
+        if recipient_account.account_number == sender_account.account_number:
+            messages.info(request,"sender and receier are same")
+            return redirect('main')
         if amount <= sender_account.balance and amount>0:
             # Perform the transfer
             sender_account.withdraw(amount)
@@ -82,7 +86,7 @@ def homebase(request):
                data=BankAccount.objects.get(username=current_user)
             
                return render(request,'main.html',{'data':data})
-        messages.info(request,"username doesn't match or accountno already exist")
+        messages.error(request,"username doesn't match or accountno already exist")
             
 
     form = BankAccountForm()
@@ -110,6 +114,9 @@ def login(request):
             if user is not None:
                 
                 auth_login(request, user)
+                if user.is_staff:       # Redirect to an admin-specific page
+                    return redirect('admin_dashboard')
+                
                 current_user = request.user
                 existing_account = BankAccount.objects.filter(username=current_user.username).exists()
 
@@ -125,6 +132,10 @@ def login(request):
 
 def register(request):
     if request.user.is_authenticated:
+        user=request.user
+        if user.is_staff:       # Redirect to an admin-specific page
+            return redirect('admin_dashboard')
+        
         return redirect('homebase')
     else:
         form=CreateUserForm()
@@ -147,6 +158,10 @@ def register(request):
 
 def home(request):
     if request.user.is_authenticated:
+        user=request.user
+        if user.is_staff:       # Redirect to an admin-specific page
+            return redirect('admin_dashboard')
+        
         current_user = request.user
         existing_account = BankAccount.objects.filter(username=current_user.username).exists()
         if existing_account:
@@ -154,3 +169,77 @@ def home(request):
         else:
             return redirect('homebase')
     return render(request,'home.html')
+
+
+
+
+
+# views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import BankAccount
+
+def admin_dashboard(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        user_name = request.POST.get('user_select')
+        deposit_amount = request.POST.get('deposit_amount')
+        withdrawal_amount = request.POST.get('withdrawal_amount')
+        
+        if action == 'deposit':
+            if not deposit_amount or deposit_amount.strip() == '':
+                messages.info(request, "Please enter a valid deposit amount.")
+                return redirect('admin_dashboard')
+            user=BankAccount.objects.get(username=user_name)
+            try:
+                deposit_amount = Decimal(deposit_amount)
+            except ValueError:
+                messages.info(request,'invalid amount')
+            if deposit_amount<=0:
+                messages.info(request,'invalid amount')
+                return redirect('admin_dashboard')    
+            user.deposit(deposit_amount)
+            user.save()
+            messages.info(request,'Amount added successfully')
+            return redirect('admin_dashboard')
+            
+        elif action == 'withdraw':
+            if not withdrawal_amount or withdrawal_amount.strip() == '':
+                messages.info(request, "Please enter a valid withdrawal amount.")
+                return redirect('admin_dashboard')
+            
+            user=BankAccount.objects.get(username=user_name)
+            try:
+                withdrawal_amount = Decimal(withdrawal_amount)
+            except ValueError:
+                messages.info(request,'invalid amount')
+            if withdrawal_amount<=0:
+                messages.info(request,'invalid amount')
+                return redirect('admin_dashboard')
+            user.withdraw(withdrawal_amount)
+            user.save()
+            messages.info(request,'Amount  withdrawed successfully')
+            return redirect('admin_dashboard')
+            
+        elif action == 'view_details':
+            # Retrieve details of the selected user
+            if not user_name or user_name.strip() == '':
+                messages.info(request, "Please select a valid user.")
+                return redirect('admin_dashboard')
+            selected_user = BankAccount.objects.get(username=user_name)
+            
+            all_users = BankAccount.objects.all()
+            # Render a template with details or redirect to a details view
+            return render(request, 'admin_dashboard.html', {'all_users': all_users,'user_details': selected_user})
+
+        elif action == 'delete':
+            if not user_name or user_name.strip() == '':
+                messages.info(request, "Please select a valid user.")
+                return redirect('admin_dashboard')
+            selected_user = BankAccount.objects.get(username=user_name)
+            selected_user.delete()
+            all_users = BankAccount.objects.all()
+            return redirect('admin_dashboard')
+    
+    all_users = BankAccount.objects.all()
+    return render(request, 'admin_dashboard.html', {'all_users': all_users})
