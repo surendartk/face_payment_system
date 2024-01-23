@@ -76,12 +76,31 @@
         box-shadow: none !important;
         outline: 0px !important;
       }
+      #messages {
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px; /* Add border-radius for a rounded look */
+    }
+
+      
+
     </style>
   </head>
   <body>
+    <div class="message-container">
+      
+          {% for message in messages %}
+              <p id="messages">{{ message }}</p>
+          {% endfor %}
+      
+  </div>
+    
     <div class="container h-100">
       <div class="d-flex justify-content-center h-100">
         <div class="user_card">
+         
           <div class="d-flex justify-content-center">
             <h3 id="form-title">REGISTER ACCOUNT</h3>
           </div>
