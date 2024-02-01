@@ -62,3 +62,23 @@ class BankAccount(models.Model):
         ]
     
         return formatted_transactions
+    
+
+
+class TemporaryFaceImage(models.Model):
+    original_image = models.ImageField(upload_to='temporary_face_images/')
+    
+
+class UserImage(models.Model):
+    username = models.CharField(max_length=255, unique=True)
+    original_image = models.ImageField(upload_to='user_images/')
+    facial_features = models.TextField(null=True, blank=True)
+
+    def set_facial_features(self, features):
+    # Ensure that features is a list before converting to JSON
+        json_data = json.dumps(features) if isinstance(features, list) else json.dumps([features])
+        self.facial_features = json_data
+
+    def get_facial_features(self):
+        return json.loads(self.facial_features) if self.facial_features else None
+    

@@ -94,41 +94,46 @@
   </head>
   <body>
     {% include 'navbar.html' %}
-
     <div class="message-container">
       {% for message in messages %}
       <p id="messages">{{ message }}</p>
       {% endfor %}
     </div>
-
     <div class="container-fluid">
       {% block content %}
-      <div class="row h-100">
-        <div class="col-12 d-flex justify-content-center align-items-center">
-          <div class="user_card">
-            <div class="d-flex justify-content-center">
-              {% if messages %}
-              <div id="messages">
-                {% for message in messages %}
-                <p class="{{ message.tags }}">{{ message }}</p>
-                {% endfor %}
+      <div class="container-fluid h-100">
+        <div class="row h-100">
+          <div class="col-12 d-flex justify-content-center align-items-center">
+            <div class="user_card">
+              <div class="d-flex justify-content-center">
+                <h3 id="form-title">Welcome home</h3>
               </div>
-              {% endif %}
-              <h3 id="form-title">Welcome home</h3>
-            </div>
-            <div class="d-flex justify-content-center form_container">
-              <a href="{% url 'quick_pay' %}" class="btn btn-primary"
-                >Quick Pay</a
-              >
-              <br />
-              <br />
-              <a href="{% url 'register_face' %}" class="btn btn-primary"
-                >Register Face</a
-              >
+              <div class="d-flex justify-content-center form_container">
+                <form
+                  method="POST"
+                  action="{% url 'register_face' %}"
+                  enctype="multipart/form-data"
+                >
+                  {% csrf_token %}
+
+                  <label for="id_username">Username:</label>
+                  <input type="text" name="username" required />
+
+                  <br />
+
+                  <label for="id_image">Upload Image:</label>
+                  <input type="file" name="image" accept="image/*" required />
+
+                  <br />
+
+                  <button type="submit">Submit</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
       {% endblock %}
     </div>
 

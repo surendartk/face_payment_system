@@ -1,0 +1,339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #7abecc !important;
+      }
+      .user_card {
+        width: 100%;
+        margin-top: auto;
+        margin-bottom: auto;
+        background: #74cfbf;
+        position: relative;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        flex-direction: column;
+        padding: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 5px;
+      }
+      .form_container {
+        margin-top: 20px;
+      }
+      #form-title {
+        color: #fff;
+      }
+      .login_btn {
+        width: 100%;
+        background: #33ccff !important;
+        color: white !important;
+      }
+      .login_btn:focus {
+        box-shadow: none !important;
+        outline: 0px !important;
+      }
+      .login_container {
+        padding: 0 2rem;
+      }
+      .input-group-text {
+        background: #f7ba5b !important;
+        color: white !important;
+        border: 0 !important;
+        border-radius: 0.25rem 0 0 0.25rem !important;
+      }
+      .input_user,
+      .input_pass:focus {
+        box-shadow: none !important;
+        outline: 0px !important;
+      }
+      #messages {
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      #inputContainer {
+        margin-top: 10px;
+      }
+
+      .image-container {
+        position: relative;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      #capturedImages,
+      #capturedImage,
+      #video,
+      #canvas {
+        display: inline-block;
+      }
+
+      #capturedImageContainer {
+        margin-top: 10px;
+      }
+
+      #video,
+      #canvas {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+
+    <div class="message-container">
+      <div id="messages">
+        {% for message in messages %}
+        <p class="{% if message.tags %}{{ message.tags }}{% endif %}">
+          {{ message }}
+        </p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      {% block content %}
+      <div class="container-fluid h-100">
+        <div class="row h-100">
+          <div class="col-12 d-flex justify-content-center align-items-center">
+            <div class="user_card">
+              <div class="d-flex justify-content-center">
+                <h3 id="form-title">Welcome Home</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div id="inputContainer" class="form_container">
+                    <label for="receiverAccountNo">Receiver Account No:</label>
+                    <input
+                      type="text"
+                      id="receiverAccountNo"
+                      name="receiver_account_no"
+                      required
+                    />
+
+                    <br />
+
+                    <label for="amount">Amount:</label>
+                    <input type="text" id="amount" name="amount" required />
+
+                    <!-- New container for the captured image -->
+                    <div id="capturedImageContainer" class="image-container">
+                      <img
+                        id="capturedImage"
+                        style="max-width: 100%; height: auto; display: none"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="image-container">
+                    <h5 id="video-title">Live Video</h5>
+                    <div id="capturedImages"></div>
+                    <video id="video" autoplay></video>
+                    <canvas
+                      id="canvas"
+                      width="640"
+                      height="480"
+                      style="display: none"
+                    ></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="button-container">
+                <button id="captureBtn">Capture Photo</button>
+                <button
+                  id="confirmBtn"
+                  style="display: none; margin-right: 10px"
+                >
+                  Confirm
+                </button>
+                <button id="retakeBtn" style="display: none; margin-left: 10px">
+                  Retake
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      const capturedImage = document.getElementById("capturedImage");
+      const captureBtn = document.getElementById("captureBtn");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const retakeBtn = document.getElementById("retakeBtn");
+
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch((error) => {
+          console.error("Error accessing webcam:", error);
+        });
+
+      captureBtn.addEventListener("click", () => {
+        context.drawImage(video, 0, 0, 640, 480);
+        capturedImage.src = canvas.toDataURL("image/jpeg");
+        capturedImage.style.display = "block";
+        confirmBtn.style.display = "inline-block";
+        retakeBtn.style.display = "inline-block";
+        captureBtn.style.display = "none";
+
+        // Display the messages on capture
+        displayMessages();
+      });
+
+      retakeBtn.addEventListener("click", () => {
+        capturedImage.style.display = "none";
+        confirmBtn.style.display = "none";
+        retakeBtn.style.display = "none";
+        captureBtn.style.display = "inline-block";
+
+        // Clear messages on retake
+        clearMessages();
+      });
+
+      confirmBtn.addEventListener("click", () => {
+        const imageData = canvas.toDataURL("image/jpeg");
+        const blob = dataURItoBlob(imageData);
+
+        const receiverAccountNo =
+          document.getElementById("receiverAccountNo").value;
+        const amount = document.getElementById("amount").value;
+
+        const formData = new FormData();
+        formData.append("image_file", blob, "captured_image.jpg");
+        formData.append("receiver_account_no", receiverAccountNo);
+        formData.append("amount", amount);
+
+        fetch("/quick_pay/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: formData,
+        })
+          .then((response) => {
+            if (
+              response.headers
+                .get("content-type")
+                .toLowerCase()
+                .includes("application/json")
+            ) {
+              return response.json();
+            } else {
+              // Content type is not JSON, stay on the current page
+              window.location.reload();
+            }
+          })
+          .then((data) => {
+            console.log("Response from server:", data);
+            if (data.success) {
+              // Display success message on the current page
+              displayMessages(
+                `<p class="success">Welcome, ${data.username}!</p>`
+              );
+            } else {
+              // Display error messages on the current page
+              displayMessages(`<p class="error">${data.message}</p>`);
+            }
+          })
+          .catch((error) => {
+            // Handle errors, if necessary
+            console.error("Error:", error);
+          });
+
+        // Reset UI for the next capture
+        capturedImage.style.display = "none";
+        confirmBtn.style.display = "none";
+        retakeBtn.style.display = "none";
+        captureBtn.style.display = "inline-block";
+
+        // Clear messages on confirm
+        clearMessages();
+      });
+
+      function dataURItoBlob(dataURI) {
+        const byteString = atob(dataURI.split(",")[1]);
+        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+      }
+
+      function displayMessages() {
+        // Fetch messages from the server and display them
+        fetch("/get_messages/") // Update the URL based on your actual endpoint
+          .then((response) => response.json())
+          .then((data) => {
+            const messagesDiv = document.querySelector(".message-container");
+            messagesDiv.innerHTML = ""; // Clear existing messages
+
+            // Loop through messages and append them to the messagesDiv
+            data.messages.forEach((message) => {
+              messagesDiv.innerHTML += `<p>${message}</p>`;
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching messages:", error);
+          });
+      }
+
+      function clearMessages() {
+        const messagesDiv = document.querySelector(".message-container");
+        messagesDiv.innerHTML = "";
+      }
+    </script>
+  </body>
+</html>
