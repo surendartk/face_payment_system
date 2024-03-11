@@ -1,139 +1,88 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>homepage</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      href="{% static '/css/main.css'  %}"
+      rel="stylesheet"
+      type="text/css"
+    />
 
-<head>
-  <title>homepage</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link href="{% static '/css/main.css'  %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
+  </head>
 
-  <style>
-    body,
-    html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #7abecc !important;
-    }
+  <body>
+    {% include 'navbar.html' %}
 
-    .user_card {
-      width: 350px;
-      margin-top: auto;
-      margin-bottom: auto;
-      background: #74cfbf;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      padding: 10px;
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      border-radius: 5px;
-    }
+    <div class="container-fluid">
+      <head>
+        <title>Create account</title>
+      </head>
 
-    .form_container {
-      margin-top: 20px;
-    }
+      <body>
+        <div class="message-container">
+          {% for message in messages %}
+          <p id="messages">{{ message }}</p>
+          {% endfor %}
+        </div>
 
-    #form-title {
-      color: #fff;
-    }
-
-    .login_btn {
-      width: 100%;
-      background: #33ccff !important;
-      color: white !important;
-    }
-
-    .login_btn:focus {
-      box-shadow: none !important;
-      outline: 0px !important;
-    }
-
-    .login_container {
-      padding: 0 2rem;
-    }
-
-    .input-group-text {
-      background: #f7ba5b !important;
-      color: white !important;
-      border: 0 !important;
-      border-radius: 0.25rem 0 0 0.25rem !important;
-    }
-
-    .input_user,
-    .input_pass:focus {
-      box-shadow: none !important;
-      outline: 0px !important;
-    }
-
-    #messages {
-      background-color: grey;
-      color: #fff;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px; /* Add border-radius for a rounded look */
-    }
-  </style>
-</head>
-
-<body>
-  {% include 'navbar.html' %}
-
-  <div class="container-fluid">
-    <head>
-      <title>Create account</title>
-    </head>
-
-    <body>
-      <div class="message-container">
-        {% for message in messages %}
-        <p id="messages">{{ message }}</p>
-        {% endfor %}
-      </div>
-
-      <div class="container h-100">
-        <div class="d-flex justify-content-center h-100">
-          <div class="user_card">
-            <div class="d-flex justify-content-center">
-              <h3 id="form-title">Create Bank ACCOUNT</h3>
-            </div>
-            <div class="d-flex justify-content-center form_container">
-              <form method="POST" action="{% url 'homebase' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="d-flex justify-content-center mt-3 login_container">
-                  <input class="btn login_btn" type="submit" value="Create account" />
-                </div>
-              </form>
+        <div class="container h-100">
+          <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+              <div class="d-flex justify-content-center">
+                <h3 id="form-title">Create Bank ACCOUNT</h3>
+              </div>
+              <div class="d-flex justify-content-center form_container">
+                <form method="POST" action="{% url 'homebase' %}">
+                  {% csrf_token %} {{ form.as_p }}
+                  <div
+                    class="d-flex justify-content-center mt-3 login_container"
+                  >
+                    <input
+                      class="btn login_btn"
+                      type="submit"
+                      value="Create account"
+                    />
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <script>
-        var form_fields = document.getElementsByTagName("input");
-        form_fields[2].placeholder = "Username..";
-        form_fields[3].placeholder = "account_number..";
-        form_fields[4].placeholder = "balance..";
+        <script>
+          var form_fields = document.getElementsByTagName("input");
+          form_fields[2].placeholder = "Username..";
+          form_fields[3].placeholder = "account_number..";
+          form_fields[4].placeholder = "balance..";
 
-        for (var field in form_fields) {
-          form_fields[field].className += " form-control";
-        }
-      </script>
-    </body>
-  </div>
+          for (var field in form_fields) {
+            form_fields[field].className += " form-control";
+          }
+        </script>
+      </body>
+    </div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-</body>
-
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

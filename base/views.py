@@ -68,7 +68,7 @@ def main(request):
                 'Sent', amount, recipient_account.account_number)
             recipient_account.add_transaction(
                 'Received', amount, sender_account.account_number)
-
+            messages.info(request, "amount send successfully")
             # Redirect to the main page with updated data
             return redirect('main')
         else:
@@ -319,8 +319,10 @@ def quick_pay(request):
                         recipient_account.add_transaction(
                             'Received', amount, sender_account.account_number)
 
+                        m = "amount successfully send "
+
                         messages.info(
-                            request, "amount send successfully")
+                            request, m)
                         return render(request, 'quick_pay.html', {'messages': messages})
 
                     else:
