@@ -15,3 +15,24 @@ This Django project provides a comprehensive bank management system with feature
 
    ```bash
    git clone https://github.com/your_username/django-bank-management.git
+Install dependencies:
+bash
+pip install -r requirements.txt
+
+Apply migrations:
+bash
+python manage.py migrate
+
+Run the development server:
+bash
+python manage.py runserver
+
+Access the application:
+Visit http://localhost:8000 to access the application.
+
+Usage:
+Visit http://localhost:8000 to access the application.
+Register as a new user or log in with existing credentials.
+Create a bank account or view existing accounts.
+Deposit or withdraw funds securely.
+Use facial recognition for secure login and transactions.
