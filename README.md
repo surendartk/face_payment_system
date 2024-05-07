@@ -11,7 +11,7 @@ This Django project provides a comprehensive bank management system with feature
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/tksuren/face_payment_system.git
+   git clone https://github.com/your_username/django-bank-management.git
